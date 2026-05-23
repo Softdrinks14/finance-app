@@ -111,18 +111,34 @@ export default function Dashboard({ user }) {
             <TransactionForm user={user} currentEdit={currentEdit} setCurrentEdit={setCurrentEdit} />
             
             {/* Chart Widget di bawah Form */}
-            <div className="section-card" style={{ marginTop: '2rem', height: '300px' }}>
-              <h3 style={{marginBottom:'0'}}>Grafik Bulanan</h3>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData}>
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip formatter={(value) => `Rp ${value.toLocaleString()}`} />
-                  <Legend />
-                  <Bar dataKey="Income" fill="#28a745" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="Outcome" fill="#dc3545" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
+            <div className="section-card" style={{ marginTop: '2rem', height: '350px', width: '100%', overflowX: 'hidden' }}>
+              <h3 style={{marginBottom:'1rem'}}>Grafik Bulanan</h3>
+              
+              <div style={{ width: '100%', height: 'calc(100% - 40px)' }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart 
+                    data={chartData} 
+                    /* Margin left dikembalikan ke 0 agar tidak memotong layar kiri */
+                    margin={{ top: 5, right: 10, left: 0, bottom: 5 }}
+                  >
+                    <XAxis dataKey="name" />
+                    {/* YAxis diberi width 60px dan diformat agar angkanya disingkat (K untuk Ribu, M untuk Juta) */}
+                    <YAxis 
+                      width={60} 
+                      tickFormatter={(value) => {
+                        if (value >= 1000000) return `${value / 1000000}M`;
+                        if (value >= 1000) return `${value / 1000}K`;
+                        return value;
+                      }}
+                      style={{ fontSize: '0.8rem' }}
+                    />
+                    <Tooltip formatter={(value) => `Rp ${value.toLocaleString('id-ID')}`} />
+                    <Legend wrapperStyle={{ paddingTop: '20px' }} />
+                    <Bar dataKey="Income" fill="#28a745" radius={[4, 4, 0, 0]} maxBarSize={60} />
+                    <Bar dataKey="Outcome" fill="#dc3545" radius={[4, 4, 0, 0]} maxBarSize={60} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           </div>
 
